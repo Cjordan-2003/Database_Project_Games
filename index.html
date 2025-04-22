@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CharGall Game Analysis Archive</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <h1>CharGall Game Analysis Archive</h1>
+
+  <div class="button-container">
+    <button onclick="showData('greatest')">Top 10 Greatest Video Games of All Time</button>
+    <button onclick="showData('worst')">Top 10 Worst Video Games of All Time</button>
+    <button onclick="showData('oldest')">Top 10 Oldest Games</button>
+    <button onclick="showData('newest')">Top 10 Newest Video Games</button>
+  </div>
+
+  <div class="output-box" id="outputBox">
+    Select a category to view the data.
+  </div>
+
+  <script>
+    function showData(category)
+    {
+      document.getElementById('outputBox').innerHTML = 
+        "Loading data for: " + category;
+    }
+  </script>
+
+</body>
+</html>
