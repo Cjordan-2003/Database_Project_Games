@@ -1,0 +1,86 @@
+Basic Website:
+
+
+csci@raspberrypi:~ $ ls
+Bookshelf  Desktop  Documents  Downloads  duckdns  Music  Pictures  Public  Templates  Videos
+csci@raspberrypi:~ $ cd /var
+csci@raspberrypi:/var $ cd www
+csci@raspberrypi:/var/www $ ls
+aumcs  html
+csci@raspberrypi:/var/www $ cd aumcs
+csci@raspberrypi:/var/www/aumcs $ ls
+Example1  Example2  games_project  index.html  info.php
+csci@raspberrypi:/var/www/aumcs $ cd games_project
+csci@raspberrypi:/var/www/aumcs/games_project $ ls
+index.html  index.php  style.css
+csci@raspberrypi:/var/www/aumcs/games_project $ nano index.php
+csci@raspberrypi:/var/www/aumcs/games_project $ rm index.php
+csci@raspberrypi:/var/www/aumcs/games_project $ ls
+index.html  style.css
+csci@raspberrypi:/var/www/aumcs/games_project $ touch index.php
+csci@raspberrypi:/var/www/aumcs/games_project $ nano index.php
+csci@raspberrypi:/var/www/aumcs/games_project $ nano index.php
+csci@raspberrypi:/var/www/aumcs/games_project $ nano index.php
+
+  GNU nano 7.2                                                    index.php                                                              
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CharGall Game Analysis Archive</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>CharGall Game Analysis Archive</h1>
+
+<div class="button-container">
+  <button onclick="showData('greatest')">Top 10 Greatest Video Games of All Time</button>
+  <button onclick="showData('worst')">Top 10 Worst Video Games of All Time</button>
+  <button onclick="showData('oldest')">Top 10 Oldest Games of All Time</button>
+  <button onclick="showData('newest')">Top 10 Newest Video Games of All Time</button>
+</div>
+
+<div class="output-box" id="outputBox">
+  Select a category to view the data.
+</div>
+
+<script>
+  // PHP generates this data at page load
+  const gameData = {
+    greatest: <?php echo getGamesJSON("rating DESC"); ?>,
+    worst: <?php echo getGamesJSON("rating ASC"); ?>,
+    oldest: <?php echo getGamesJSON("release_date ASC"); ?>,
+    newest: <?php echo getGamesJSON("release_date DESC"); ?>
+  };
+
+  function showData(category) {
+    const games = gameData[category];
+    if (!games || games.length === 0) {
+      document.getElementById('outputBox').innerHTML = "No data found.";
+      return;
+    }
+
+    let html = "<ul>";
+    games.forEach(g => {
+      html += `<li>${g.title}</li>`;
+    });
+    html += "</ul>";
+
+    document.getElementById('outputBox').innerHTML = html;
+  }
+</script>
+
+<?php
+// PHP function to get and return JSON-encoded data for JS
+function getGamesJSON($orderBy) {
+  $conn = new mysqli("192.168.94.87", "root", "aumcs", "games_project");
+  if ($conn->connect_error) return json_encode([]);
+
+  $sql = "SELECT title FROM game_info ORDER BY $orderBy LIMIT 10";
+  $result = $conn->query($sql);
+
+  $games = [];
+  while ($row = $result->fetch_assoc()) {
+    $games[] = ["title" => $row["title"]];
+  }
